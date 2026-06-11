@@ -72,7 +72,7 @@ const customDataProvider = {
 
 const authProvider = {
     login: ({ username, password }) => {
-        if ((username === 'admin' && password === 'admin123') || (username === 'teacher' && password === 'teacher123')) {
+        if ((username === 'admin' && password === 'admin132541Cs') || (username === 'teacher' && password === 'teacher123')) {
             localStorage.setItem('auth', username);
             return Promise.resolve();
         }
