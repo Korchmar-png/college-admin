@@ -64,19 +64,41 @@ const dataProvider = supabaseDataProvider({
   idColumn: 'id',
 });
 
-// Настоящий механизм выхода: чистим сессию и жестко перезагружаем страницу
+// НАСТОЯЩИЙ AUTH PROVIDER — включает окно логина и проверяет пароль
 const authProvider = {
-    login: () => Promise.resolve(),
+    // Вызывается при отправке формы логина
+    login: ({ username, password }) => {
+        // Здесь задаются логин и пароль для входа (можешь поменять на свои)
+        if (username === 'admin' && password === 'admin123') {
+            localStorage.setItem('authenticated', 'true');
+            return Promise.resolve();
+        }
+        return Promise.reject(new Error('Неверный логин или пароль'));
+    },
+    // Вызывается при нажатии на кнопку "Выйти"
     logout: () => {
-        localStorage.clear();
+        localStorage.removeItem('authenticated');
         sessionStorage.clear();
-        window.location.href = '/'; // Перенаправление сбрасывает состояние админки
+        window.location.href = '/'; // Перенаправляем на главную, чтобы сбросить состояние
         return Promise.resolve();
     },
-    checkAuth: () => Promise.resolve(),
-    checkError: () => Promise.resolve(),
+    // Проверяет, залогинен ли пользователь (если нет — выкидывает на форму входа)
+    checkAuth: () => {
+        return localStorage.getItem('authenticated') === 'true'
+            ? Promise.resolve()
+            : Promise.reject();
+    },
+    // Вызывается при ошибках API
+    checkError: (error) => {
+        const status = error.status;
+        if (status === 401 || status === 403) {
+            localStorage.removeItem('authenticated');
+            return Promise.reject();
+        }
+        return Promise.resolve();
+    },
     getPermissions: () => Promise.resolve(),
-    // Возвращаем пустую строку вместо имени, чтобы убрать надпись "Администратор" из шапки
+    // Имя оставляем пустым, чтобы в шапке была только аккуратная иконка человечка
     getIdentity: () => Promise.resolve({ id: 'admin', fullName: '' }),
 };
 
