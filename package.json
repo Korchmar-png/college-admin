@@ -12,13 +12,16 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@mui/icons-material": "^9.1.0",
-    "@mui/material": "^9.1.0",
+    "@mui/icons-material": "^9.1.1",
+    "@mui/material": "^9.1.1",
     "@supabase/supabase-js": "^2.108.1",
+    "ra-i18n-polyglot": "^5.14.7",
     "ra-language-russian": "^5.4.5",
+    "ra-supabase": "^3.5.2",
     "react": "^19.2.6",
     "react-admin": "^5.14.7",
-    "react-dom": "^19.2.6"
+    "react-dom": "^19.2.6",
+    "react-imask": "^7.6.1"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
