@@ -64,31 +64,25 @@ const dataProvider = supabaseDataProvider({
   idColumn: 'id',
 });
 
-// НАСТОЯЩИЙ AUTH PROVIDER — включает окно логина и проверяет пароль
+// НАДЕЖНЫЙ AUTH PROVIDER — без моргания интерфейса
 const authProvider = {
-    // Вызывается при отправке формы логина
     login: ({ username, password }) => {
-        // Здесь задаются логин и пароль для входа (можешь поменять на свои)
         if (username === 'admin' && password === 'admin123') {
             localStorage.setItem('authenticated', 'true');
             return Promise.resolve();
         }
         return Promise.reject(new Error('Неверный логин или пароль'));
     },
-    // Вызывается при нажатии на кнопку "Выйти"
     logout: () => {
         localStorage.removeItem('authenticated');
         sessionStorage.clear();
-        window.location.href = '/'; // Перенаправляем на главную, чтобы сбросить состояние
         return Promise.resolve();
     },
-    // Проверяет, залогинен ли пользователь (если нет — выкидывает на форму входа)
     checkAuth: () => {
         return localStorage.getItem('authenticated') === 'true'
             ? Promise.resolve()
             : Promise.reject();
     },
-    // Вызывается при ошибках API
     checkError: (error) => {
         const status = error.status;
         if (status === 401 || status === 403) {
@@ -98,8 +92,12 @@ const authProvider = {
         return Promise.resolve();
     },
     getPermissions: () => Promise.resolve(),
-    // Имя оставляем пустым, чтобы в шапке была только аккуратная иконка человечка
-    getIdentity: () => Promise.resolve({ id: 'admin', fullName: '' }),
+    // Возвращаем стандартный промис, чтобы убрать микро-лаг и моргание экрана
+    getIdentity: () => {
+        return localStorage.getItem('authenticated') === 'true'
+            ? Promise.resolve({ id: 'admin', fullName: '' })
+            : Promise.reject();
+    }
 };
 
 // ==================== КАСТОМНАЯ ВЕРХНЯЯ ПАНЕЛЬ С КНОПКОЙ ВЫХОДА ====================
