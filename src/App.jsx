@@ -1,4 +1,5 @@
 import React from 'react';
+import MyLoginPage from './MyLoginPage';
 import { 
   Admin, 
   Resource, 
@@ -95,18 +96,23 @@ const authProvider = {
     // Возвращаем стандартный промис, чтобы убрать микро-лаг и моргание экрана
     getIdentity: () => {
         return localStorage.getItem('authenticated') === 'true'
-            ? Promise.resolve({ id: 'admin', fullName: '' })
+            ? Promise.resolve({ id: 'admin', fullName: 'admin' })
             : Promise.reject();
     }
 };
 
+
+
 // ==================== КАСТОМНАЯ ВЕРХНЯЯ ПАНЕЛЬ С КНОПКОЙ ВЫХОДА ====================
 const MyLogoutButton = React.forwardRef((props, ref) => (
-    <Logout {...props} ref={ref} icon={<ExitToAppIcon />} label="Выйти" />
+  <Logout {...props} ref={ref} icon={<ExitToAppIcon />} label="Выйти" />
 ));
 
-// Скрываем имя, оставляем только чистую иконку человечка
-const MyUserMenu = () => <UserMenu logout={<MyLogoutButton />} icon={null} />;
+const MyUserMenu = () => (
+  <UserMenu>
+    <MyLogoutButton />
+  </UserMenu>
+);
 
 const MyAppBar = (props) => (
     <AppBar {...props} userMenu={<MyUserMenu />} title="Электронный учет студентов" />
@@ -209,13 +215,17 @@ const GradeFilter = (props) => (
 
 const AttendanceFilter = (props) => (
   <Filter {...props}>
-    <MaskedDateInput label="Дата (ДД.ММ.ГГГГ)" source="date" alwaysOn />
-    <SelectInput label="Статус" source="status" choices={[
-      { id: 'Был', name: 'Был' },
-      { id: 'Опоздал', name: 'Опоздал' },
-      { id: 'Болел', name: 'Болел' },
-      { id: 'Прогулял', name: 'Прогулял' },
-    ]} />
+    <DateInput label="Дата" source="date" alwaysOn />
+    <SelectInput
+      label="Статус"
+      source="status"
+      choices={[
+        { id: 'Был', name: 'Был' },
+        { id: 'Опоздал', name: 'Опоздал' },
+        { id: 'Болел', name: 'Болел' },
+        { id: 'Прогулял', name: 'Прогулял' },
+      ]}
+    />
   </Filter>
 );
 
@@ -515,6 +525,7 @@ const App = () => (
     authProvider={authProvider}
     i18nProvider={i18nProvider}
     layout={MyLayout}
+    
   >
     <Resource name="students" list={StudentList} edit={StudentEdit} create={StudentCreate} icon={PersonIcon} options={{ label: 'Студенты' }} />
     <Resource name="groups" list={GroupList} edit={GroupEdit} create={GroupCreate} icon={GroupIcon} options={{ label: 'Группы' }} />
