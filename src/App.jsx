@@ -31,7 +31,7 @@ import russianMessages from 'ra-language-russian';
 import polyglotI18nProvider from 'ra-i18n-polyglot';
 import { IMaskInput } from 'react-imask';
 
-// Иконки для меню
+
 import GroupIcon from '@mui/icons-material/Group';
 import SchoolIcon from '@mui/icons-material/School';
 import ClassIcon from '@mui/icons-material/Class';
@@ -40,7 +40,7 @@ import GradeIcon from '@mui/icons-material/Grade';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
-// Локализация на русский язык
+
 const i18nProvider = polyglotI18nProvider(() => russianMessages, 'ru');
 
 // Инициализация Supabase
@@ -65,7 +65,7 @@ const dataProvider = supabaseDataProvider({
   idColumn: 'id',
 });
 
-// НАДЕЖНЫЙ AUTH PROVIDER — без моргания интерфейса
+
 const authProvider = {
     login: ({ username, password }) => {
         if (username === 'admin' && password === 'admin123') {
@@ -93,7 +93,7 @@ const authProvider = {
         return Promise.resolve();
     },
     getPermissions: () => Promise.resolve(),
-    // Возвращаем стандартный промис, чтобы убрать микро-лаг и моргание экрана
+    
     getIdentity: () => {
         return localStorage.getItem('authenticated') === 'true'
             ? Promise.resolve({ id: 'admin', fullName: 'admin' })
@@ -103,7 +103,7 @@ const authProvider = {
 
 
 
-// ==================== КАСТОМНАЯ ВЕРХНЯЯ ПАНЕЛЬ С КНОПКОЙ ВЫХОДА ====================
+
 const MyLogoutButton = React.forwardRef((props, ref) => (
   <Logout {...props} ref={ref} icon={<ExitToAppIcon />} label="Выйти" />
 ));
@@ -120,7 +120,7 @@ const MyAppBar = (props) => (
 
 const MyLayout = (props) => <Layout {...props} appBar={MyAppBar} />;
 
-// ==================== УМНОЕ ПОЛЕ С МАСКОЙ И СИНХРОНИЗАЦИЕЙ С БАЗОЙ ====================
+
 const MaskedDateInput = ({ onChange, value, ...props }) => {
   return (
     <TextInput
@@ -132,11 +132,10 @@ const MaskedDateInput = ({ onChange, value, ...props }) => {
             <IMaskInput
               {...inputProps}
               inputRef={ref}
-              mask="00.00.0000" // Маска ввода на экране
+              mask="00.00.0000" 
               lazy={false}
               overwrite
-              // Как только введены все 8 цифр, отправляем в React-Admin формат ГГГГ-ММ-ДД
-              onAccept={(val) => {
+                            onAccept={(val) => {
                 const clean = val.replace(/_/g, '');
                 if (clean.length === 10) {
                   const [day, month, year] = clean.split('.');
@@ -144,7 +143,7 @@ const MaskedDateInput = ({ onChange, value, ...props }) => {
                     inputProps.onChange({ target: { name: inputProps.name, value: `${year}-${month}-${day}` } });
                   }
                 } else if (clean.length === 0 && inputProps.onChange) {
-                  // Если поле стерли, сбрасываем фильтр поиска
+                  
                   inputProps.onChange({ target: { name: inputProps.name, value: undefined } });
                 }
               }}
@@ -156,7 +155,7 @@ const MaskedDateInput = ({ onChange, value, ...props }) => {
   );
 };
 
-// ==================== ФИЛЬТРЫ И ПОИСК ДЛЯ ВСЕХ ТАБЛИЦ ====================
+
 const StudentFilter = (props) => (
   <Filter {...props}>
     <TextInput label="Поиск по фамилии" source="last_name@ilike" alwaysOn />
@@ -229,7 +228,7 @@ const AttendanceFilter = (props) => (
   </Filter>
 );
 
-// ==================== СТУДЕНТЫ ====================
+//СТУДЕНТЫ 
 export const StudentList = (props) => (
   <List {...props} filters={<StudentFilter />} title="Список студентов" sort={{ field: 'last_name', order: 'ASC' }}>
     <Datagrid rowClick="edit">
@@ -288,7 +287,7 @@ export const StudentCreate = (props) => (
   </Create>
 );
 
-// ==================== ГРУППЫ ====================
+//ГРУППЫ
 export const GroupList = (props) => (
   <List {...props} filters={<GroupFilter />} title="Группы" sort={{ field: 'name', order: 'ASC' }}>
     <Datagrid rowClick="edit">
@@ -327,7 +326,7 @@ export const GroupCreate = (props) => (
   </Create>
 );
 
-// ==================== СПЕЦИАЛЬНОСТИ ====================
+//СПЕЦИАЛЬНОСТИ
 export const SpecialtyList = (props) => (
   <List {...props} filters={<SpecialtyFilter />} title="Специальности">
     <Datagrid rowClick="edit">
@@ -357,7 +356,7 @@ export const SpecialtyCreate = (props) => (
   </Create>
 );
 
-// ==================== ПРЕПОДАВАТЕЛИ ====================
+//ПРЕПОДАВАТЕЛИ 
 export const TeacherList = (props) => (
   <List {...props} filters={<TeacherFilter />} title="Преподаватели" sort={{ field: 'last_name', order: 'ASC' }}>
     <Datagrid rowClick="edit">
@@ -390,7 +389,7 @@ export const TeacherCreate = (props) => (
   </Create>
 );
 
-// ==================== ДИСЦИПЛИНЫ ====================
+//ДИСЦИПЛИНЫ 
 export const SubjectList = (props) => (
   <List {...props} filters={<SubjectFilter />} title="Дисциплины" sort={{ field: 'name', order: 'ASC' }}>
     <Datagrid rowClick="edit">
@@ -417,7 +416,7 @@ export const SubjectCreate = (props) => (
   </Create>
 );
 
-// ==================== ОЦЕНКИ ====================
+//ОЦЕНКИ
 export const GradeList = (props) => (
   <List {...props} filters={<GradeFilter />} title="Успеваемость / Оценки" sort={{ field: 'date', order: 'DESC' }}>
     <Datagrid rowClick="edit">
@@ -469,7 +468,7 @@ export const GradeCreate = (props) => (
   </Create>
 );
 
-// ==================== ПОСЕЩАЕМОСТЬ ====================
+// ПОСЕЩАЕМОСТЬ
 export const AttendanceList = (props) => (
   <List 
     {...props} 
@@ -518,12 +517,13 @@ export const AttendanceCreate = (props) => (
   </Create>
 );
 
-// ==================== СБОРКА АДМИНКИ ====================
+
 const App = () => (
   <Admin 
     dataProvider={dataProvider} 
     authProvider={authProvider}
     i18nProvider={i18nProvider}
+    loginPage={MyLoginPage}
     layout={MyLayout}
     
   >
